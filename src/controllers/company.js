@@ -58,8 +58,6 @@ export default {
             });
         }
 
-
-
         Company.destroy({
             where: { id }
         }).then(result => {
