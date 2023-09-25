@@ -9,7 +9,7 @@ const dbPassword = '090909';
 const sequelize = new Sequelize({
     dialect: 'sqlite',
     storage: 'db.sql',
-    //logging: false,
+    logging: false,
     
 })
 

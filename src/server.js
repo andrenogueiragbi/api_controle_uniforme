@@ -5,6 +5,7 @@ import nodemon from 'nodemon';
 import cors from 'cors';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import start from './controllers/users.js'
 
 dotenv.config();
 
@@ -17,13 +18,12 @@ app.use(morgan('combined'));
 
 
 
+await db.sync();
 
 
-db.sync( () => 
-    console.log(`Banco de dados conectado: clientes`)
-);
- 
-app.listen(3000, () => 
-    console.log(` 👉 Servidor run port ${process.env.PORT} 🔵`)
+app.listen(3000, () => {
+    start.startLogin()
+    console.log(`👉 Servidor run port ${process.env.PORT || 3000} 🟢`)}
+
 );
 

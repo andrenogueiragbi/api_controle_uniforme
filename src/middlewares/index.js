@@ -32,7 +32,7 @@ export default async (req, res, next) => {
             message: 'Token malFormatted'
         });
     }
-    const {expires,payload: { result:{id,email} }} = checkToken(token)
+    const {expires,payload: { result:{id,email,type} }} = checkToken(token)
 
 
     if (expires || !await Login.findOne({where:{email,active:'Y'}})) {
@@ -44,6 +44,8 @@ export default async (req, res, next) => {
 
 
     } else {
+        console.log(type)
+        req.type_user = type
         next()
     }
 

@@ -1,6 +1,9 @@
 import Login from '../models/loginModel.js';
 import checkParameter from '../lib/checkParameter.js'
 import bcrypt from 'bcrypt'
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const salt = bcrypt.genSaltSync();
 
@@ -37,6 +40,25 @@ export default {
                 message: `missing parameter or ${id} not number`
             });
         }
+
+        //valida se existe usaurio é master
+        if (!req.type_user || req.type_user != 'master') {
+            return res.status(403).send({
+                ok: false,
+                message: `your type user is not permitted delete`
+            });
+        }
+
+        //valida se existe usaurio é master
+        if (id == 1) {
+            return res.status(403).send({
+                ok: false,
+                message: `not permitted delete user start`
+            });
+        }
+
+
+
 
         Login.destroy({
             where: { id }
@@ -75,6 +97,8 @@ export default {
     async post(req, res) {
         const { name, email, password, type } = req.body;
 
+        console.log('>>>>>>>>>>>>', req.type_user)
+
         //valida se tem todos os parametros para salvar 
         if (!name || !email || !password) {
             return res.status(403).send({
@@ -99,11 +123,19 @@ export default {
             });
         }
 
+        //valida se usuario admin esta querendo criar master
+        if (req.type_user == 'admin' && type == 'master') {
+            return res.status(403).send({
+                ok: false,
+                message: `your type user is not permitted create master`
+            });
+        }
+
         Login.create({
             name,
             email,
             password: bcrypt.hashSync(password, salt),
-            type: type ? type : 'admin',
+            type: req.type_user === 'master' ? !type ? 'admin' : type : 'admin',
             active: 'Y'
         }).then(result => {
             result.password = undefined
@@ -236,5 +268,23 @@ export default {
         }
 
     },
+    startLogin() {
+
+        Login.findOne({ where: { type: 'master' } }).then(result => {
+
+            if (!result) {
+                Login.create({
+                    name: process.env.MASTER_NAME || 'master',
+                    email: process.env.MASTER_EMAIL || 'master@master.com.br',
+                    password: bcrypt.hashSync(process.env.MASTER_PASSWORD || '12345678.A', salt),
+                    type: 'master',
+                    active: 'Y'
+
+                })
+
+            }
+
+        })
+    }
 
 }
