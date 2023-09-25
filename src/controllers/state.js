@@ -7,7 +7,7 @@ export default {
         await State.findAll({
             include: [{
                 model: Country,
-                attributes: [ 'name'],
+                attributes: ['name'],
 
             }]
         })
@@ -29,7 +29,7 @@ export default {
             })
 
     },
-/*     async delete(req, res) {
+    async delete(req, res) {
 
         const { id } = req.params
 
@@ -76,7 +76,7 @@ export default {
         })
 
 
-    }, */
+    },
     async post(req, res) {
         const { name, abbreviation, id_country } = req.body;
 
@@ -110,10 +110,10 @@ export default {
         })
 
     },
-/*     async update(req, res) {
+    async update(req, res) {
 
         const { id } = req.params
-        const { name } = req.body;
+        const { name, abbreviation, id_country } = req.body;
 
         //valida se existe parametro e se é número
         if (!id || isNaN(id)) {
@@ -124,7 +124,11 @@ export default {
         }
 
 
-        State.update({ name: name.toUpperCase() }, { where: { id } })
+        State.update({
+            name: name ? name.toUpperCase() : undefined,
+            abbreviation: abbreviation ? abbreviation.toUpperCase() : undefined,
+            id_country: id_country ? id_country : undefined
+        }, { where: { id } })
             .then(result => {
 
                 if (result[0]) {
@@ -155,5 +159,5 @@ export default {
 
 
 
-    }, */
+    },
 }

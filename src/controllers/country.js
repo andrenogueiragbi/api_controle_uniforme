@@ -73,9 +73,6 @@ export default {
     async post(req, res) {
         const { name } = req.body;
 
-
-        console.log('ÇÇÇÇÇÇÇÇÇÇÇÇÇÇÇÇÇçç')
-
         //valida se tem todos os parametros para salvar 
         if (!name) {
             return res.status(403).send({

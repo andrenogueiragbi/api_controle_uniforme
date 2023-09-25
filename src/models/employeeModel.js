@@ -1,7 +1,8 @@
 import { Sequelize } from 'sequelize';
 import db from '../database/index.js';
+import City from "./city.js";
 
-export default db.define('employee', {
+const Employee = db.define('employee', {
     id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -34,22 +35,11 @@ export default db.define('employee', {
         type: Sequelize.STRING,
         unique: true
     },
-    addres: {
+    address: {
         type: Sequelize.STRING,
         allowNull: false,
     },
-    locality: {
-        type: Sequelize.STRING,
-        allowNull: false,
-    },
-    city: {
-        type: Sequelize.STRING,
-        allowNull: false,
-    },
-    state: {
-        type: Sequelize.STRING,
-        allowNull: false,
-    },
+
     company: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -68,6 +58,20 @@ export default db.define('employee', {
             isIn: [['Y', 'N']], // Defina os valores permitidos aqui
         },
     },
-
+    id_city: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+            model: City,
+            key: "id",
+        }
+    }
 
 })
+
+Employee.belongsTo(City, {
+    foreignKey: 'id_city',
+});
+
+
+export default Employee;

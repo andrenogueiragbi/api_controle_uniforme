@@ -1,3 +1,4 @@
+import Company from "../models/company.js";
 import City from "../models/city.js";
 import State from "../models/state.js";
 import Country from "../models/country.js";
@@ -8,20 +9,25 @@ import Country from "../models/country.js";
 
 export default {
     async get(req, res) {
-        await City.findAll({
-            attributes: ['id', 'name'], // Atributos da tabela City que deseja selecionar
+        await Company.findAll({
+            attributes: ['id', 'name','cnpj','address'], // Atributos da tabela Company que deseja selecionar
             include: [
               {
-                model: State,
+                model: City,
                 attributes: ['name'],
                 include: [
                   {
-                    model: Country,
+                    model: State,
                     attributes: ['name'],
+                    include: [{
+                        model: Country,
+                        attributes: ['name'],
+
+                    }]
                   },
                 ],
               },
-            ],
+            ], 
           }).then(result => {
 
                 return res.status(200).send({
@@ -54,7 +60,7 @@ export default {
 
 
 
-        City.destroy({
+        Company.destroy({
             where: { id }
         }).then(result => {
 
@@ -89,20 +95,21 @@ export default {
 
     }, 
     async post(req, res) {
-        const { name, id_state } = req.body;
+        const { name,cnpj, address,id_city } = req.body;
 
         //valida se tem todos os parametros para salvar 
-        if (!name || !id_state) {
+        if (!name || !cnpj || !address || address.lenght < 10 || !id_city) {
             return res.status(403).send({
                 ok: false,
                 message: 'missing parameter'
             });
         }
 
-
-        await City.create({
+        await Company.create({
             name: name.toUpperCase(),
-            id_state
+            cnpj,
+            address: address.toUpperCase(),
+            id_city
         }).then(result => {
             return res.status(200).send({
                 ok: true,
@@ -121,10 +128,10 @@ export default {
      async update(req, res) {
 
         const { id } = req.params
-        const { name ,id_state} = req.body;
+        const { name,cnpj,address ,id_city} = req.body;
 
         //valida se existe parametro e se é número
-        if (!id || isNaN(id)) {
+        if (!id || isNaN(id) || address.lenght < 10) {
             return res.status(403).send({
                 ok: false,
                 message: `missing parameter or ${id} not number`
@@ -132,9 +139,11 @@ export default {
         }
 
 
-        City.update({ 
+        Company.update({ 
             name: name ? name.toUpperCase() : undefined,
-            id_state: id_state? id_state : undefined,
+            cnpj: cnpj? cnpj : undefined,
+            address: address? address.toUpperCase() : undefined,
+            id_city: id_city? id_city : undefined,
 
          }, { where: { id } })
             .then(result => {
