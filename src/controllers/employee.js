@@ -1,11 +1,43 @@
 import Employee from '../models/employeeModel.js'
+import City from '../models/city.js'
+import Country from '../models/country.js'
+import State from '../models/state.js'
+import Company from '../models/company.js'
 import checkParameter from '../lib/checkParameter.js'
 
 
 export default {
     async get(req, res) {
 
-        await Employee.findAll()
+        await Employee.findAll({
+            include: [
+                {
+                    model: City,
+                    attributes: ['name'],
+                    include: [
+                        {
+                            model: State,
+                            attributes: ['name'],
+                            include: [
+                                {
+                                    model: Country,
+                                    attributes: ['name'],
+
+                                }
+
+                            ]
+                        },
+                    ],
+                },
+                {
+
+                    model: Company,
+                    attributes: ['name'],
+                }
+
+            ],
+
+        })
             .then(result => {
 
                 return res.status(200).send({
@@ -29,11 +61,58 @@ export default {
 
 
     },
+    async delete(req, res) {
+
+        const { id } = req.params
+
+        //valida se existe parametro e se é número
+        if (!id || isNaN(id)) {
+            return res.status(403).send({
+                ok: false,
+                message: `missing parameter or ${id} not number`
+            });
+        }
+
+
+        Employee.destroy({
+            where: { id }
+        }).then(result => {
+
+            if (result) {
+                return res.status(200).send({
+                    ok: true,
+                    message: `successful deletion id ${id}`,
+                    result
+
+                });
+
+            } else {
+                return res.status(403).send({
+                    ok: false,
+                    message: `failed deletion, not found id ${id}`,
+                    result
+
+                });
+
+            }
+
+
+        }).catch(err => {
+
+            return res.status(500).send({
+                ok: false,
+                message: err
+            });
+
+        })
+
+
+    },
     async post(req, res) {
-        const { name, birth_date, photo_face, email, telephone_1, telephone_2, addres, locality, city, state, company, sex, active } = req.body;
+        const { name, birth_date, photo_face, email, telephone_1, telephone_2, address, sex, active, id_city, id_company } = req.body;
 
         //valida se tem todos os parametros para salvar 
-        if (!name || !birth_date || !email || !telephone_1 || !addres || !locality || !city || !state || !company || !sex || !active) {
+        if (!name || !birth_date || !email || !telephone_1 || !address || !sex || !active || !id_city || !id_company) {
             return res.status(403).send({
                 ok: false,
                 message: 'missing parameter'
@@ -57,13 +136,11 @@ export default {
             email,
             telephone_1,
             telephone_2,
-            addres,
-            locality,
-            city,
-            state,
-            company,
+            address,
             sex,
-            active
+            active,
+            id_city,
+            id_company
 
         }).then(result => {
             return res.status(200).send({
