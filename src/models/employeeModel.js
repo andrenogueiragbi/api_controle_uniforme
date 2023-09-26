@@ -2,6 +2,7 @@ import { Sequelize } from 'sequelize';
 import db from '../database/index.js';
 import City from "./city.js";
 
+
 const Employee = db.define('employee', {
     id: {
         type: Sequelize.INTEGER,
