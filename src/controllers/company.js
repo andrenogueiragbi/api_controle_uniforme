@@ -4,9 +4,6 @@ import State from "../models/state.js";
 import Country from "../models/country.js";
 
 
-
-
-
 export default {
     async get(req, res) {
         await Company.findAll({

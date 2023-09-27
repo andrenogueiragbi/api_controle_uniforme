@@ -47,7 +47,9 @@ routes.put(version+'/company/:id',company.update)
 
 //rotas de funcionários
 routes.get(version+'/employee/', employee.get);
+routes.delete(version+'/employee/:id', employee.delete);
 routes.post(version+'/employee/', employee.post);
+routes.put(version+'/employee/:id',employee.update)
 
 
 

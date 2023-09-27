@@ -80,9 +80,5 @@ Employee.belongsTo(City, {
     foreignKey: 'id_city',
 });
 
-Employee.belongsTo(Company, {
-    foreignKey: 'id_company',
-});
-
 
 export default Employee;
