@@ -1,6 +1,7 @@
 import { Sequelize } from 'sequelize';
 import db from '../database/index.js';
 import City from "./city.js";
+import Company from "./company.js";
 
 
 const Employee = db.define('employee', {
@@ -41,10 +42,7 @@ const Employee = db.define('employee', {
         allowNull: false,
     },
 
-    company: {
-        type: Sequelize.STRING,
-        allowNull: false,
-    },
+
     sex: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -66,12 +64,24 @@ const Employee = db.define('employee', {
             model: City,
             key: "id",
         }
-    }
+    },
+    id_company: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+            model: Company,
+            key: "id",
+        }
+    },
 
 })
 
 Employee.belongsTo(City, {
     foreignKey: 'id_city',
+});
+
+Employee.belongsTo(Company, {
+    foreignKey: 'id_company',
 });
 
 

@@ -30,10 +30,10 @@ export default {
 
     },
     async post(req, res) {
-        const { name, birth_date, photo_face, email, telephone_1, telephone_2, addres, locality, city, state, company, sex, active } = req.body;
+        const { name, birth_date, photo_face, email, telephone_1, telephone_2, address, sex, active, id_city, id_company} = req.body;
 
         //valida se tem todos os parametros para salvar 
-        if (!name || !birth_date || !email || !telephone_1 || !addres || !locality || !city || !state || !company || !sex || !active) {
+        if (!name || !birth_date || !email || !telephone_1 || !address ||  !sex ||  !id_city || !id_company) {
             return res.status(403).send({
                 ok: false,
                 message: 'missing parameter'
@@ -57,13 +57,11 @@ export default {
             email,
             telephone_1,
             telephone_2,
-            addres,
-            locality,
-            city,
-            state,
-            company,
+            address,
             sex,
-            active
+            active,
+            id_city,
+            id_company
 
         }).then(result => {
             return res.status(200).send({
